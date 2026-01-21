@@ -61,21 +61,7 @@ public class MenuCustomer {
 
                 case 2: {
                     System.out.println("Thêm khách hàng mới");
-
                     Customer customer = new Customer();
-
-                    System.out.print("Name: ");
-                    customer.setName(sc.nextLine());
-
-                    System.out.print("Phone: ");
-                    customer.setPhone(sc.nextLine());
-
-                    System.out.print("Email: ");
-                    customer.setEmail(sc.nextLine());
-
-                    System.out.print("Address: ");
-                    customer.setAddress(sc.nextLine());
-
                     customerService.addCustomer(customer);
                     System.out.println("Thêm khách hàng thành công");
                     break;

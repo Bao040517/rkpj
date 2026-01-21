@@ -67,6 +67,9 @@ public class MenuPhone {
                     System.out.print("Price: ");
                     product.setPrice(Double.parseDouble(sc.nextLine()));
 
+                    System.out.println("Nhập stock: ");
+                    product.setStock(Integer.parseInt(sc.nextLine()));
+
                     productService.addProduct(product);
                     break;
                 }
@@ -75,11 +78,10 @@ public class MenuPhone {
                     System.out.println("Cập nhật thông tin sản phẩm");
 
                     try {
-                        System.out.print("Nhập ID sản phẩm cần cập nhật: ");
+                        System.out.println("Nhập ID sản phẩm cần cập nhật: ");
                         Integer id = Integer.parseInt(sc.nextLine());
 
-                        Product currentProduct =
-                                productService.getProductById(id).get(0);
+                        Product currentProduct = productService.getProductById(id).get(0);
                         // Em thưa thầy sao cái Extenstion lại gợi ý cái get(0) này để làm gì ạ
 
                         int choiceUpdate;
@@ -177,29 +179,33 @@ public class MenuPhone {
 
                 case 6: {
                     System.out.println("Tìm kiếm theo khoảng giá");
+                    try {
+                        System.out.print("Giá thấp nhất: ");
+                        double priceFrom = Double.parseDouble(sc.nextLine());
 
-                    System.out.print("Giá thấp nhất: ");
-                    double priceFrom = Double.parseDouble(sc.nextLine());
+                        System.out.print("Giá cao nhất: ");
+                        double priceTo = Double.parseDouble(sc.nextLine());
 
-                    System.out.print("Giá cao nhất: ");
-                    double priceTo = Double.parseDouble(sc.nextLine());
+                        List<Product> productList =
+                                productService.searchByPriceRange(priceFrom, priceTo);
 
-                    List<Product> productList =
-                            productService.searchByPriceRange(priceFrom, priceTo);
-
-                    for (Product p : productList) {
-                        System.out.println(
-                                p.getName() + " | "
-                                        + p.getBrand() + " | "
-                                        + p.getPrice()
-                        );
+                        for (Product p : productList) {
+                            System.out.println(
+                                    p.getName() + " | "
+                                            + p.getBrand() + " | "
+                                            + p.getPrice()
+                            );
+                        }
+                    }
+                    catch (NumberFormatException e) {
+                        System.out.println("Nhập sai dữ liệu");
                     }
                     break;
                 }
 
                 case 7: {
                     System.out.println("Tìm kiếm theo tồn kho");
-                    System.out.print("Nhập tên sản phẩm: ");
+                    System.out.print("Nhập CHÍNH XÁC tên sản phẩm: ");
                     productService.searchByStock(sc.nextLine());
                     break;
                 }

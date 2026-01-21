@@ -7,6 +7,7 @@ import Service.service.CustomerService;
 import Service.service.InvoiceService;
 import dtos.Statistics;
 
+import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -39,7 +40,7 @@ public class MenuInvoice {
             }
 
             switch (choice) {
-                case 1:
+                case 1: {
                     System.out.println("Hiển thị danh sách hóa đơn");
                     List<Invoice> invoiceList = invoiceService.getAllInvoices();
                     for (Invoice invoice : invoiceList) {
@@ -49,9 +50,9 @@ public class MenuInvoice {
                                         + " | Created At: " + invoice.getCreatedAt()
                                         + " | Total Amount: " + invoice.getTotalAmount()
                         );
-                        break;
                     }
-
+                    break;
+                }
                 case 2:
                 {
                     System.out.println("Thêm mới hóa đơn");
@@ -69,6 +70,7 @@ public class MenuInvoice {
                         InvoiceDetails invoiceDetails = new InvoiceDetails();
                         invoiceDetails.setInvoiceId(invoiceId);
                         invoiceDetails.setProductId(Integer.parseInt(sc.nextLine()));
+                        System.out.println("Nhập số lượng");
                         invoiceDetails.setQuantity(Integer.parseInt(sc.nextLine()));
 
                         invoiceService.createInvoiceDetails(invoiceDetails);
@@ -92,12 +94,10 @@ public class MenuInvoice {
                         System.out.println("----- MENU TÌM KIẾM / THỐNG KÊ HÓA ĐƠN -----");
                         System.out.println("1. Tìm theo tên khách hàng");
                         System.out.println("2. Tìm theo ngày (dd/MM/yyyy)");
-                        System.out.println("3. Tìm theo tháng/năm");
-                        System.out.println("4. Tìm theo năm");
-                        System.out.println("5. Thống kê doanh thu theo ngày");
-                        System.out.println("6. Thống kê doanh thu theo tháng");
-                        System.out.println("7. Thống kê doanh thu theo năm");
-                        System.out.println("8. Quay lại menu hóa đơn");
+                        System.out.println("3. Thống kê doanh thu theo ngày");
+                        System.out.println("4. Thống kê doanh thu theo tháng");
+                        System.out.println("5. Thống kê doanh thu theo năm");
+                        System.out.println("6. Quay lại menu hóa đơn");
                         System.out.println("-------------------------------------------");
                         System.out.print("Nhập lựa chọn: ");
 
@@ -163,14 +163,13 @@ public class MenuInvoice {
                                 break;
                             }
 
-                            case 5: {
+                            case 3: {
                                 System.out.print("Nhập tháng: ");
                                 int month = Integer.parseInt(sc.nextLine());
                                 System.out.print("Nhập năm: ");
                                 int year = Integer.parseInt(sc.nextLine());
 
-                                List<Statistics> stats =
-                                        invoiceService.statisticByDay(month, year);
+                                List<Statistics> stats = invoiceService.statisticByDay(month, year);
 
                                 for (Statistics s : stats) {
                                     System.out.println(
@@ -183,12 +182,11 @@ public class MenuInvoice {
                                 break;
                             }
 
-                            case 6: {
+                            case 4: {
                                 System.out.print("Nhập năm: ");
                                 int year = Integer.parseInt(sc.nextLine());
 
-                                List<Statistics> stats =
-                                        invoiceService.statisticByMonth(year);
+                                List<Statistics> stats = invoiceService.statisticByMonth(year);
 
                                 for (Statistics s : stats) {
                                     System.out.println(
@@ -200,9 +198,8 @@ public class MenuInvoice {
                                 break;
                             }
 
-                            case 7: {
-                                List<Statistics> stats =
-                                        invoiceService.statisticByYear();
+                            case 5: {
+                                List<Statistics> stats = invoiceService.statisticByYear();
 
                                 for (Statistics s : stats) {
                                     System.out.println(
@@ -213,7 +210,7 @@ public class MenuInvoice {
                                 break;
                             }
 
-                            case 8:
+                            case 6:
                                 System.out.println("Quay lại menu hóa đơn");
                                 break;
 
@@ -221,12 +218,10 @@ public class MenuInvoice {
                                 System.out.println("Lựa chọn không hợp lệ");
                         }
 
-                    } while (subChoice != 8);
+                    } while (subChoice != 6);
 
                     break;
                 }
-
-
 
                 case 4:
                     System.out.println("Quay lại menu chính");

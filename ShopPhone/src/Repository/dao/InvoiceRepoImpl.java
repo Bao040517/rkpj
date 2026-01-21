@@ -48,6 +48,7 @@ public class InvoiceRepoImpl implements Repository.daoImpl.InvoiceRepository {
             ResultSet rs = stmt.getResultSet();
             while(rs.next()){
                 Invoice invoice = new Invoice();
+                invoice.setId(rs.getInt("id"));
                 invoice.setCustomerId(rs.getInt("customer_id"));
                 invoice.setCreatedAt(rs.getTimestamp("created_at"));
                 invoice.setTotalAmount(rs.getDouble("total_amount"));
@@ -236,7 +237,7 @@ public class InvoiceRepoImpl implements Repository.daoImpl.InvoiceRepository {
         List<Statistics> statisticsList = new ArrayList<>();
         try{
             conn = ConnectionOpen.getConnection();
-            stmt = conn.prepareCall("CALL get_total_revenue_year()");
+            stmt = conn.prepareCall("{CALL get_total_revenue_year()}");
             stmt.execute();
             ResultSet rs = stmt.getResultSet();
             while (rs.next()) {

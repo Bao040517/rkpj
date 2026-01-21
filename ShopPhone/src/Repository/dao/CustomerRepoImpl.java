@@ -65,7 +65,7 @@ public class CustomerRepoImpl implements Repository.daoImpl.CustomerRepository {
             stmt.execute();
         }
         catch (Exception e){
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
         finally {
             ConnectionOpen.closeConnection(conn,stmt);
@@ -84,6 +84,7 @@ public class CustomerRepoImpl implements Repository.daoImpl.CustomerRepository {
             ResultSet rs = stmt.getResultSet();
             while (rs.next()) {
                 Customer customer = new Customer();
+                customer.setId(rs.getInt("id"));
                 customer.setName(rs.getString("name"));
                 customer.setPhone(rs.getString("phone"));
                 customer.setEmail(rs.getString("email"));
@@ -111,6 +112,7 @@ public class CustomerRepoImpl implements Repository.daoImpl.CustomerRepository {
             ResultSet rs = stmt.getResultSet();
             if (rs.next()) {
                 Customer customer = new Customer();
+                customer.setId(rs.getInt("id"));
                 customer.setName(rs.getString("customer_name"));
                 customer.setPhone(rs.getString("phone"));
                 customer.setEmail(rs.getString("email"));
@@ -118,7 +120,7 @@ public class CustomerRepoImpl implements Repository.daoImpl.CustomerRepository {
                 return customer;
             }
         }catch (Exception e){
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
         finally {
             ConnectionOpen.closeConnection(conn,stmt);

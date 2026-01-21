@@ -5,6 +5,8 @@ import Repository.daoImpl.CustomerRepository;
 import Service.service.CustomerService;
 
 import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class CustomerServiceImpl implements CustomerService {
 
@@ -13,11 +15,69 @@ public class CustomerServiceImpl implements CustomerService {
      public CustomerServiceImpl(CustomerRepository customerImpl) {
         this.customerImpl = customerImpl;
     }
-
+    Scanner sc =  new Scanner(System.in);
      @Override
-    public void addCustomer(Customer customer) {
-        customerImpl.createCustomer(customer);
-    }
+     public void addCustomer(Customer customer) {
+
+         String name;
+         String phone;
+         String email;
+         String address;
+         while (true) {
+             System.out.print("Name: ");
+             name = sc.nextLine().trim();
+             try {
+                 Integer.parseInt(name);
+                 System.out.println("Tên không được là số!");
+             } catch (NumberFormatException e) {
+                 if (name.isEmpty()) {
+                     System.out.println("Tên không được trống!");
+                 } else {
+                     break;
+                 }
+             }
+         }
+         while (true) {
+             System.out.print("Phone: ");
+             phone = sc.nextLine().trim();
+
+             try {
+                 Long.parseLong(phone);
+                 break;
+             } catch (NumberFormatException e) {
+                 System.out.println("Số điện thoại phải được là số!");
+             }
+         }
+
+         while (true) {
+             System.out.print("Email: ");
+             email = sc.nextLine().trim();
+
+             if (email.matches("^[a-zA-Z0-9._%+-]+@gmail\\.com$")) {
+                 break;
+             } else {
+                 System.out.println("Email không đúng cú pháp ");
+             }
+         }
+         while (true) {
+             System.out.print("Address: ");
+             address = sc.nextLine().trim();
+
+             if (address.matches("\\d+")) {
+                 System.out.println("Địa chỉ sai");
+             } else if (address.isEmpty()) {
+                 System.out.println("Địa chỉ trống!");
+             } else {
+                 break;
+             }
+         }
+         customer.setName(name);
+         customer.setPhone(phone);
+         customer.setEmail(email);
+         customer.setAddress(address);
+
+         customerImpl.createCustomer(customer);
+     }
 
      @Override
     public void updateCustomer(int id, Customer customer) {
@@ -44,7 +104,7 @@ public class CustomerServiceImpl implements CustomerService {
 
      @Override
     public List<Customer> getAllCustomers() {
-        return customerImpl.getAllCustomers();
+         return customerImpl.getAllCustomers();
     }
 
      @Override

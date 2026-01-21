@@ -43,24 +43,21 @@ public class MenuManager {
             switch (choice) {
 
                 case 1: {
-                    ProductService productService =
-                            new ProductServiceImpl(new ProductRepoImpl());
+                    ProductService productService = new ProductServiceImpl(new ProductRepoImpl());
                     MenuPhone menuPhone = new MenuPhone(productService);
                     menuPhone.showPhoneMenu();
                     break;
                 }
 
                 case 2: {
-                    CustomerService customerService =
-                            new CustomerServiceImpl(new CustomerRepoImpl());
+                    CustomerService customerService = new CustomerServiceImpl(new CustomerRepoImpl());
                     MenuCustomer menuCustomer = new MenuCustomer(customerService);
                     menuCustomer.showCustomerMenu();
                     break;
                 }
 
                 case 3: {
-                    InvoiceService invoiceService =
-                            new InvoiceServiceImpl(new InvoiceRepoImpl());
+                    InvoiceService invoiceService = new InvoiceServiceImpl(new InvoiceRepoImpl());
                     MenuInvoice menuInvoice = new MenuInvoice(invoiceService);
                     menuInvoice.showInvoiceMenu();
                     break;
