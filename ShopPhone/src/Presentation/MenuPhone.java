@@ -43,12 +43,15 @@ public class MenuPhone {
                 case 1: {
                     System.out.println("Hiển thị danh sách sản phẩm");
                     List<Product> productList = productService.getAllProducts();
+                    System.out.printf("%-5s | %-25s | %-15s | %-20s | %s%n", "ID", "Name", "Brand", "Price", "Stock");
+                    System.out.println("------------------------------------------------------------------------------");
                     for (Product product : productList) {
-                        System.out.println(
-                                "ID: " + product.getId()
-                                        + " | Name: " + product.getName()
-                                        + " | Brand: " + product.getBrand()
-                                        + " | Price: " + product.getPrice()
+                        System.out.printf("%-5d | %-25s | %-15s | %-20.0f | %d%n",
+                                product.getId(),
+                                product.getName(),
+                                product.getBrand(),
+                                product.getPrice(),
+                                product.getStock()
                         );
                     }
                     break;
@@ -64,13 +67,18 @@ public class MenuPhone {
                     System.out.print("Brand: ");
                     product.setBrand(sc.nextLine());
 
-                    System.out.print("Price: ");
-                    product.setPrice(Double.parseDouble(sc.nextLine()));
+                    try {
+                        System.out.print("Price: ");
+                        product.setPrice(Double.parseDouble(sc.nextLine()));
 
-                    System.out.println("Nhập stock: ");
-                    product.setStock(Integer.parseInt(sc.nextLine()));
+                        System.out.print("Nhập stock: ");
+                        product.setStock(Integer.parseInt(sc.nextLine()));
 
-                    productService.addProduct(product);
+                        productService.addProduct(product);
+                        System.out.println("Thêm sản phẩm thành công!");
+                    } catch (NumberFormatException e) {
+                        System.out.println("Giá và tồn kho phải là số!");
+                    }
                     break;
                 }
 
@@ -78,11 +86,15 @@ public class MenuPhone {
                     System.out.println("Cập nhật thông tin sản phẩm");
 
                     try {
-                        System.out.println("Nhập ID sản phẩm cần cập nhật: ");
+                        System.out.print("Nhập ID sản phẩm cần cập nhật: ");
                         Integer id = Integer.parseInt(sc.nextLine());
 
-                        Product currentProduct = productService.getProductById(id).get(0);
-                        // Em thưa thầy sao cái Extenstion lại gợi ý cái get(0) này để làm gì ạ
+                        List<Product> products = productService.getProductById(id);
+                        if (products.isEmpty()) {
+                            System.out.println("Không tìm thấy sản phẩm với ID: " + id);
+                            break;
+                        }
+                        Product currentProduct = products.get(0);
 
                         int choiceUpdate;
                         do {
@@ -101,29 +113,24 @@ public class MenuPhone {
                                     System.out.print("Tên mới: ");
                                     currentProduct.setName(sc.nextLine());
                                     break;
-
                                 case 2:
                                     System.out.print("Brand mới: ");
                                     currentProduct.setBrand(sc.nextLine());
                                     break;
-
                                 case 3:
                                     System.out.print("Giá mới: ");
                                     currentProduct.setPrice(
                                             Double.parseDouble(sc.nextLine()));
                                     break;
-
                                 case 4:
                                     System.out.print("Tồn kho mới: ");
                                     currentProduct.setStock(
                                             Integer.parseInt(sc.nextLine()));
                                     break;
-
                                 case 5:
                                     productService.updateProduct(id, currentProduct);
                                     System.out.println("Cập nhật thành công");
                                     break;
-
                                 default:
                                     System.out.println("Không đúng lựa chọn");
                             }
@@ -146,10 +153,14 @@ public class MenuPhone {
                         System.out.print("Nhập ID sản phẩm muốn xoá: ");
                         Integer id = Integer.parseInt(sc.nextLine());
 
-                        Product del =
-                                productService.getProductById(id).get(0);
+                        List<Product> products = productService.getProductById(id);
+                        if (products.isEmpty()) {
+                            System.out.println("Không tìm thấy sản phẩm với ID: " + id);
+                            break;
+                        }
 
-                        productService.deleteProduct(del.getId());
+                        productService.deleteProduct(id);
+                        System.out.println("Xóa sản phẩm thành công!");
 
                     } catch (NumberFormatException e) {
                         System.out.println("Dữ liệu nhập không hợp lệ");
@@ -163,15 +174,24 @@ public class MenuPhone {
                 case 5: {
                     System.out.println("Tìm kiếm theo Brand");
                     System.out.print("Nhập Brand: ");
-
+                    String brand = sc.nextLine();
                     List<Product> productList =
-                            productService.searchByBrand(sc.nextLine());
+                            productService.searchByBrand(brand);
 
+                    if (productList.isEmpty()) {
+                        System.out.println("Không tìm thấy sản phẩm nào với brand: " + brand);
+                        break;
+                    }
+                    
+                    System.out.printf("%-5s | %-25s | %-15s | %-20s | %s%n", "ID", "Name", "Brand", "Price", "Stock");
+                    System.out.println("------------------------------------------------------------------------------");
                     for (Product p : productList) {
-                        System.out.println(
-                                p.getName() + " | "
-                                        + p.getBrand() + " | "
-                                        + p.getPrice()
+                         System.out.printf("%-5d | %-25s | %-15s | %-20.0f | %d%n",
+                                p.getId(),
+                                p.getName(),
+                                p.getBrand(),
+                                p.getPrice(),
+                                p.getStock()
                         );
                     }
                     break;
@@ -189,16 +209,25 @@ public class MenuPhone {
                         List<Product> productList =
                                 productService.searchByPriceRange(priceFrom, priceTo);
 
+                        if (productList.isEmpty()) {
+                            System.out.println("Không có sản phẩm nào trong khoảng giá này.");
+                            break;
+                        }
+
+                        System.out.printf("%-5s | %-25s | %-15s | %-20s | %s%n", "ID", "Name", "Brand", "Price", "Stock");
+                        System.out.println("------------------------------------------------------------------------------");
                         for (Product p : productList) {
-                            System.out.println(
-                                    p.getName() + " | "
-                                            + p.getBrand() + " | "
-                                            + p.getPrice()
+                            System.out.printf("%-5d | %-25s | %-15s | %-20.0f | %d%n",
+                                    p.getId(),
+                                    p.getName(),
+                                    p.getBrand(),
+                                    p.getPrice(),
+                                    p.getStock()
                             );
                         }
                     }
                     catch (NumberFormatException e) {
-                        System.out.println("Nhập sai dữ liệu");
+                        System.out.println("Nhập sai dữ liệu, giá phải là số.");
                     }
                     break;
                 }

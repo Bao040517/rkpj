@@ -58,7 +58,8 @@ public class MenuManager {
 
                 case 3: {
                     InvoiceService invoiceService = new InvoiceServiceImpl(new InvoiceRepoImpl());
-                    MenuInvoice menuInvoice = new MenuInvoice(invoiceService);
+                    ProductService productService = new ProductServiceImpl(new ProductRepoImpl());
+                    MenuInvoice menuInvoice = new MenuInvoice(invoiceService, productService);
                     menuInvoice.showInvoiceMenu();
                     break;
                 }

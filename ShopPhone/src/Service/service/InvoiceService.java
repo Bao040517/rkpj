@@ -15,6 +15,9 @@ public interface InvoiceService {
     List<Invoice> getAllInvoices();
     Invoice getInvoiceById(int id);
 
+    void deleteInvoice(int id);
+
+
     List<Invoice> searchByCustomerName(String customerName);
     List<Invoice> searchByDate(LocalDate date);
 

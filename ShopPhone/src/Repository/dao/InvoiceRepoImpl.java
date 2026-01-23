@@ -29,7 +29,7 @@ public class InvoiceRepoImpl implements Repository.daoImpl.InvoiceRepository {
 
             return stmt.getInt(1);
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e.getMessage(), e);
         } finally {
             ConnectionOpen.closeConnection(conn, stmt);
@@ -41,12 +41,12 @@ public class InvoiceRepoImpl implements Repository.daoImpl.InvoiceRepository {
         Connection conn = null;
         CallableStatement stmt = null;
         List<Invoice> invoices = new ArrayList<>();
-        try{
-            conn =  ConnectionOpen.getConnection();
+        try {
+            conn = ConnectionOpen.getConnection();
             stmt = conn.prepareCall("{CALL get_all_invoice()}");
             stmt.execute();
             ResultSet rs = stmt.getResultSet();
-            while(rs.next()){
+            while (rs.next()) {
                 Invoice invoice = new Invoice();
                 invoice.setId(rs.getInt("id"));
                 invoice.setCustomerId(rs.getInt("customer_id"));
@@ -54,12 +54,10 @@ public class InvoiceRepoImpl implements Repository.daoImpl.InvoiceRepository {
                 invoice.setTotalAmount(rs.getDouble("total_amount"));
                 invoices.add(invoice);
             }
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-        finally{
-            ConnectionOpen.closeConnection(conn,stmt);
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        } finally {
+            ConnectionOpen.closeConnection(conn, stmt);
         }
         return invoices;
     }
@@ -68,19 +66,17 @@ public class InvoiceRepoImpl implements Repository.daoImpl.InvoiceRepository {
     public void createInvoiceDetails(InvoiceDetails invoiceDetails) {
         Connection conn = null;
         CallableStatement stmt = null;
-        try{
-            conn =  ConnectionOpen.getConnection();
-            stmt = conn.prepareCall("CALL create_invoice_detail(?,?,?) ");
+        try {
+            conn = ConnectionOpen.getConnection();
+            stmt = conn.prepareCall("CALL create_invoice_detail(?,?,?)");
             stmt.setInt(1, invoiceDetails.getInvoiceId());
             stmt.setInt(2, invoiceDetails.getProductId());
             stmt.setInt(3, invoiceDetails.getQuantity());
             stmt.execute();
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-        finally{
-            ConnectionOpen.closeConnection(conn,stmt);
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        } finally {
+            ConnectionOpen.closeConnection(conn, stmt);
         }
     }
 
@@ -89,24 +85,23 @@ public class InvoiceRepoImpl implements Repository.daoImpl.InvoiceRepository {
     public Invoice getInvoiceById(Integer invoiceId) {
         Connection conn = null;
         CallableStatement stmt = null;
-        try{
-            conn =  ConnectionOpen.getConnection();
+        try {
+            conn = ConnectionOpen.getConnection();
             stmt = conn.prepareCall("{CALL get_invoice_by_id(?)}");
             stmt.setInt(1, invoiceId);
             stmt.execute();
             ResultSet rs = stmt.getResultSet();
-            while (rs.next()){
+            if (rs.next()) {
                 Invoice invoice = new Invoice();
                 invoice.setCustomerId(rs.getInt("customer_id"));
                 invoice.setCreatedAt(rs.getTimestamp("created_at"));
                 invoice.setTotalAmount(rs.getDouble("total_amount"));
                 return invoice;
             }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        finally{
-            ConnectionOpen.closeConnection(conn,stmt);
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        } finally {
+            ConnectionOpen.closeConnection(conn, stmt);
         }
         return null;
     }
@@ -116,13 +111,13 @@ public class InvoiceRepoImpl implements Repository.daoImpl.InvoiceRepository {
         Connection conn = null;
         CallableStatement stmt = null;
         List<Invoice> invoices = new ArrayList<>();
-        try{
-            conn =  ConnectionOpen.getConnection();
+        try {
+            conn = ConnectionOpen.getConnection();
             stmt = conn.prepareCall("{CALL get_invoice_by_customer_name(?) }");
             stmt.setString(1, customerName);
             stmt.execute();
             ResultSet rs = stmt.getResultSet();
-            while(rs.next()){
+            while (rs.next()) {
                 Invoice invoice = new Invoice();
                 invoice.setCustomerId(rs.getInt("customer_id"));
                 invoice.setCreatedAt(rs.getTimestamp("created_at"));
@@ -130,12 +125,10 @@ public class InvoiceRepoImpl implements Repository.daoImpl.InvoiceRepository {
                 invoice.setCustomerId(rs.getInt("customer_id"));
                 invoices.add(invoice);
             }
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-        finally{
-            ConnectionOpen.closeConnection(conn,stmt);
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        } finally {
+            ConnectionOpen.closeConnection(conn, stmt);
         }
         return invoices;
     }
@@ -145,29 +138,26 @@ public class InvoiceRepoImpl implements Repository.daoImpl.InvoiceRepository {
         Connection conn = null;
         CallableStatement stmt = null;
         List<Invoice> invoices = new ArrayList<>();
-        try{
-            conn =  ConnectionOpen.getConnection();
+        try {
+            conn = ConnectionOpen.getConnection();
             stmt = conn.prepareCall("{CALL get_invoice_by_datetime(?) }");
             stmt.setTimestamp(1, Timestamp.valueOf(date.atStartOfDay()));
             stmt.execute();
             ResultSet rs = stmt.getResultSet();
-            while(rs.next()){
+            while (rs.next()) {
                 Invoice invoice = new Invoice();
                 invoice.setId(rs.getInt("invoice_id"));
                 invoice.setCustomerId(rs.getInt("customer_id"));
                 invoice.setCreatedAt(rs.getTimestamp("created_at"));
                 invoice.setTotalAmount(rs.getDouble("total_amount"));
                 invoices.add(invoice);
-                return invoices;
             }
-        }catch (Exception e){
-            e.printStackTrace();
-
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        } finally {
+            ConnectionOpen.closeConnection(conn, stmt);
         }
-        finally{
-            ConnectionOpen.closeConnection(conn,stmt);
-        }
-        return null;
+        return invoices;
     }
 
     @Override
@@ -191,11 +181,10 @@ public class InvoiceRepoImpl implements Repository.daoImpl.InvoiceRepository {
                 statisticsList.add(stat);
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            ConnectionOpen.closeConnection(conn,stmt);
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        } finally {
+            ConnectionOpen.closeConnection(conn, stmt);
         }
 
         return statisticsList;
@@ -206,7 +195,7 @@ public class InvoiceRepoImpl implements Repository.daoImpl.InvoiceRepository {
         Connection conn = null;
         CallableStatement stmt = null;
         List<Statistics> statisticsList = new ArrayList<>();
-        try{
+        try {
             conn = ConnectionOpen.getConnection();
             stmt = conn.prepareCall("{CALL get_total_revenue_month(?)}");
             stmt.setInt(1, year);
@@ -221,13 +210,11 @@ public class InvoiceRepoImpl implements Repository.daoImpl.InvoiceRepository {
             }
             return statisticsList;
 
-        }catch (Exception e){
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        } finally {
+            ConnectionOpen.closeConnection(conn, stmt);
         }
-        finally{
-            ConnectionOpen.closeConnection(conn,stmt);
-        }
-        return null;
     }
 
     @Override
@@ -235,7 +222,7 @@ public class InvoiceRepoImpl implements Repository.daoImpl.InvoiceRepository {
         Connection conn = null;
         CallableStatement stmt = null;
         List<Statistics> statisticsList = new ArrayList<>();
-        try{
+        try {
             conn = ConnectionOpen.getConnection();
             stmt = conn.prepareCall("{CALL get_total_revenue_year()}");
             stmt.execute();
@@ -247,14 +234,26 @@ public class InvoiceRepoImpl implements Repository.daoImpl.InvoiceRepository {
                 statisticsList.add(stat);
             }
             return statisticsList;
-        }catch (Exception e){
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        } finally {
+            ConnectionOpen.closeConnection(conn, stmt);
         }
-        finally{
-            ConnectionOpen.closeConnection(conn,stmt);
-        }
-        return null;
     }
 
-
+    @Override
+    public void deleteInvoice(Integer invoiceId) {
+        Connection conn = null;
+        CallableStatement stmt = null;
+        try {
+            conn = ConnectionOpen.getConnection();
+            stmt = conn.prepareCall("CALL delete_invoice_by_id(?)");
+            stmt.setInt(1, invoiceId);
+            stmt.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        } finally {
+            ConnectionOpen.closeConnection(conn, stmt);
+        }
+    }
 }

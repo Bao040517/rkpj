@@ -2,12 +2,11 @@ package Presentation;
 
 import Repository.Entity.Invoice;
 import Repository.Entity.InvoiceDetails;
-import Repository.dao.CustomerRepoImpl;
-import Service.service.CustomerService;
+import Repository.Entity.Product;
 import Service.service.InvoiceService;
+import Service.service.ProductService;
 import dtos.Statistics;
 
-import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -16,9 +15,13 @@ import java.util.Scanner;
 
 public class MenuInvoice {
     private final InvoiceService invoiceService;
-    public MenuInvoice(InvoiceService invoiceService) {
+    private final ProductService productService;
+
+    public MenuInvoice(InvoiceService invoiceService, ProductService productService) {
         this.invoiceService = invoiceService;
+        this.productService = productService;
     }
+
     public void showInvoiceMenu() {
         Scanner sc = new Scanner(System.in);
         int choice = 0;
@@ -53,8 +56,7 @@ public class MenuInvoice {
                     }
                     break;
                 }
-                case 2:
-                {
+                case 2: {
                     System.out.println("Thêm mới hóa đơn");
 
                     try {
@@ -65,18 +67,57 @@ public class MenuInvoice {
                         invoice.setCustomerId(customerId);
 
                         Integer invoiceId = invoiceService.createInvoice(invoice);
+                        boolean productAdded = false;
 
-                        System.out.println("Nhập mã hàng: ");
-                        InvoiceDetails invoiceDetails = new InvoiceDetails();
-                        invoiceDetails.setInvoiceId(invoiceId);
-                        invoiceDetails.setProductId(Integer.parseInt(sc.nextLine()));
-                        System.out.println("Nhập số lượng");
-                        invoiceDetails.setQuantity(Integer.parseInt(sc.nextLine()));
+                        List<Product> productList = productService.getAllProducts();
+                        System.out.println("----- DANH SÁCH SẢN PHẨM -----");
+                        for (Product product : productList) {
+                            System.out.println("ID: " + product.getId() + " | Tên: " + product.getName() + " | Giá: " + product.getPrice() + " | Số lượng tồn: " + product.getStock());
+                        }
+                        System.out.println("-----------------------------");
 
-                        invoiceService.createInvoiceDetails(invoiceDetails);
+                        String addAnotherProduct;
+                        do {
+                            try {
+                                System.out.println("Nhập chi tiết hóa đơn (nhập 'q' ở mã sản phẩm để thoát):");
+                                System.out.print("Nhập mã sản phẩm: ");
+                                String productIdInput = sc.nextLine();
 
-                        System.out.println("Tạo hóa đơn thành công");
-                        System.out.println("Invoice ID = " + invoiceId);
+                                if (productIdInput.equalsIgnoreCase("q")) {
+                                    break;
+                                }
+
+                                int productId = Integer.parseInt(productIdInput);
+
+                                System.out.print("Nhập số lượng: ");
+                                int quantity = Integer.parseInt(sc.nextLine());
+
+                                InvoiceDetails invoiceDetails = new InvoiceDetails();
+                                invoiceDetails.setInvoiceId(invoiceId);
+                                invoiceDetails.setProductId(productId);
+                                invoiceDetails.setQuantity(quantity);
+
+                                invoiceService.createInvoiceDetails(invoiceDetails);
+                                productAdded = true;
+                                System.out.println("Thêm sản phẩm thành công.");
+
+                            } catch (NumberFormatException e) {
+                                System.out.println("Mã sản phẩm hoặc số lượng phải là số. Vui lòng thử lại.");
+                            } catch (RuntimeException e) {
+                                System.out.println("Lỗi: " + e.getMessage() + ". Vui lòng thử lại.");
+                            }
+
+                            System.out.print("Bạn có muốn thêm sản phẩm khác không? (y/n): ");
+                            addAnotherProduct = sc.nextLine();
+                        } while (addAnotherProduct.equalsIgnoreCase("y"));
+
+                        if (productAdded) {
+                            System.out.println("Tạo hóa đơn thành công");
+                            System.out.println("Invoice ID = " + invoiceId);
+                        } else {
+                            invoiceService.deleteInvoice(invoiceId);
+                            System.out.println("Hóa đơn đã được hủy vì không có sản phẩm nào được thêm.");
+                        }
 
                     } catch (NumberFormatException e) {
                         System.out.println("Customer ID phải là số");

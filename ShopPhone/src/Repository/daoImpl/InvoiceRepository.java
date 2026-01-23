@@ -17,6 +17,7 @@ public interface InvoiceRepository {
     List<Statistics> getInvoiceStatisticDay(Integer month, Integer year);
     List<Statistics> getInvoiceStatisticMonth(Integer year);
     List<Statistics> getInvoiceStatisticYear();
+    void deleteInvoice(Integer invoiceId);
 
 
 

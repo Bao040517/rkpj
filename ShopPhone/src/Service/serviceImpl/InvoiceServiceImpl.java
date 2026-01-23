@@ -14,6 +14,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceRepository invoiceImpl;
 
     public InvoiceServiceImpl(InvoiceRepository invoiceImpl) {
+
         this.invoiceImpl = invoiceImpl;
     }
 
@@ -36,6 +37,11 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public Invoice getInvoiceById(int id) {
         return invoiceImpl.getInvoiceById(id);
+    }
+
+    @Override
+    public void deleteInvoice(int id) {
+        invoiceImpl.deleteInvoice(id);
     }
 
     @Override
